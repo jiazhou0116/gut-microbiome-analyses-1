@@ -1,0 +1,19 @@
+#Using PICRUST2 in supercomputer
+#You can see a description of the PICRUSt2 command by running:
+qiime picrust2 full-pipeline --help
+
+qiime picrust2 full-pipeline --i-table feature-table.qza \
+                             --i-seq rep-seqs.qza \
+                             --output-dir q2-picrust2_stratified_output \
+                             --p-threads 1 \
+                             --p-hsp-method pic \
+                             --p-max-nsti 2 \
+
+qiime feature-table summarize --i-table pathway_abundance.qza --o-visualization pathway_abundance.qzv
+
+qiime tools export --input-path pathway_abundance.qza \
+                   --output-path pathabun_exported
+
+biom convert -i pathabun_exported/feature-table.biom \
+             -o pathabun_exported/feature-table.biom.tsv \
+             --to-tsv
