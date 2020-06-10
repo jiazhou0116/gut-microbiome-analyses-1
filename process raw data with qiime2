@@ -1,0 +1,96 @@
+#importing the demultiplexed fastq files
+qiime tools import \
+  --type 'SampleData[PairedEndSequencesWithQuality]' \
+  --input-path manifest_file.txt \
+  --output-path CaneToadData1imported2.qza \
+  --input-format PairedEndFastqManifestPhred33
+
+#generate and view a summary of how many sequences were obtained per sample
+#decide the trimming parameters for next step
+qiime demux summarize \
+  --i-data CaneToadData1imported2.qza \
+  --o-visualization CaneToadData1imported2.qzv
+
+#view .qzv file with qiime tools view or view.qiime2.org by uploading files or providing URLs. 
+
+#using dada2
+#the following step is too big, running through supercomputer.
+qiime dada2 denoise-single \
+  --i-demultiplexed-seqs CaneToadData1imported.qza \
+  --p-trim-left 20 \
+  --p-trunc-len 220 \
+  --o-representative-sequences rep-seqs-dada2.qza \
+  --o-table table-dada2.qza \
+  --o-denoising-stats stats-dada2.qza
+
+
+#using Deblur
+qiime quality-filter q-score \
+ --i-demux CaneToadData1imported2.qza \
+ --o-filtered-sequences demux-filtered2.qza \
+ --o-filter-stats demux-filter-stats2.qza
+
+#the following two steps are too big, running through supercomputer.
+qiime deblur denoise-16S \
+  --i-demultiplexed-seqs demux-filtered2.qza \
+  --p-trim-length 220 \
+  --o-representative-sequences rep-seqs-deblur.qza \
+  --o-table table-deblur.qza \
+  --p-sample-stats \
+  --o-stats deblur-stats.qza
+
+#Feature Table and FeatureData summaries
+qiime feature-table summarize \
+  --i-table table-dada2.qza \
+  --o-visualization table-dada2.qzv \
+  --m-sample-metadata-file MetaData_CaneToadData1.tsv
+qiime feature-table tabulate-seqs \
+  --i-data rep-seqs-dada2.qza \
+  --o-visualization rep-seqs-dada2.qzv
+qiime metadata tabulate \
+  --m-input-file stats-dada2.qza \
+  --o-visualization stats-dada2.qzv
+
+#generate phylogeny tree
+qiime phylogeny align-to-tree-mafft-fasttree \
+  --i-sequences rep-seqs-dada2.qza \
+  --o-alignment aligned-rep-seqs-dada2.qza \
+  --o-masked-alignment masked-aligned-rep-seqs-dada2.qza \
+  --o-tree unrooted-tree-dada2.qza \
+  --o-rooted-tree rooted-tree-dada2.qza
+  
+##Taxonomic analysis - train own classifiers
+mkdir training-feature-classifiers
+cd training-feature-classifiers
+
+qiime tools import \
+  --type 'FeatureData[Sequence]' \
+  --input-path gg_13_8_otus/rep_set/99_otus.fasta \
+  --output-path 99_otus.qza
+
+qiime tools import \
+  --type 'FeatureData[Taxonomy]' \
+  --input-format HeaderlessTSVTaxonomyFormat \
+  --input-path gg_13_8_otus/taxonomy/99_otu_taxonomy.txt \
+  --output-path ref-taxonomy.qza
+
+qiime feature-classifier extract-reads \
+  --i-sequences 99_otus.qza \
+  --p-f-primer GTGCCAGCMGCCGCGGTAA \
+  --p-r-primer GGACTACHVGGGTWTCTAAT \
+  --p-trunc-len 100 \
+  --o-reads ref-seqs.qza
+
+qiime feature-classifier fit-classifier-naive-bayes \
+  --i-reference-reads ref-seqs.qza \
+  --i-reference-taxonomy ref-taxonomy.qza \
+  --o-classifier classifier.qza
+
+qiime feature-classifier classify-sklearn \
+  --i-classifier classifier.qza \
+  --i-reads rep-seqs-dada2.qza \
+  --o-classification taxonomy_gg.qza
+
+qiime metadata tabulate \
+  --m-input-file taxonomy_gg.qza \
+  --o-visualization taxonomy_gg.qzv
