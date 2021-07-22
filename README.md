@@ -1,6 +1,8 @@
 # gut-microbiome-analyses - (1)
 Raw sequenced data was processed through open-source QIIME2 pipeline (Bolyen et al., 2018), further analyzed using various R packages.
 
+The codes that used for data analysis in the following manuscript:
+
 https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.13139
 
 A comparison of nonlethal sampling methods for amphibian gut microbiome analyses
