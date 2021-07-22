@@ -1,4 +1,8 @@
-# gut-microbiome-analyses
+# gut-microbiome-analyses - (1)
 Raw sequenced data was processed through open-source QIIME2 pipeline (Bolyen et al., 2018), further analyzed using various R packages.
 
-https://www.researchgate.net/publication/338876580_A_comparison_of_non-lethal_sampling_methods_for_amphibian_gut_microbiome_analyses 
+https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.13139
+
+A comparison of nonlethal sampling methods for amphibian gut microbiome analyses
+
+Noninvasive sampling methods for studying intestinal microbiomes are widely applied in studies of endangered species and in those conducting temporal monitoring during manipulative experiments. Although existing studies show that noninvasive sampling methods among different taxa vary in their accuracy, no studies have yet been published comparing nonlethal sampling methods in adult amphibians. In this study, we compare microbiomes from two noninvasive sample types (faeces and cloacal swabs) to that of the large intestine in adult cane toads, Rhinella marina. We use 16S rRNA gene sequencing to investigate how microbial communities change along the digestive tract and which nonlethal sampling method better represents large intestinal microbiota. We found that cane toads' intestinal microbiota was dominated by Bacteroidetes, Proteobacteria and Firmicutes and, interestingly, we also saw a high proportion of Fusobacteria, which has previously been associated with marine species and changes in frog immunity. The large and small intestine of cane toads had a similar microbial composition, but the large intestine showed higher diversity. Our results indicate that cloacal swabs were more similar to large intestine samples than were faecal samples, and small intestine samples were significantly different from both nonlethal sample types. Our study provides valuable information for future investigations of the cane toad gut microbiome and validates the use of cloacal swabs as a nonlethal method to study changes in the large intestine microbiome. These data provide insights for future studies requiring nonlethal sampling of amphibian gut microbiota.
